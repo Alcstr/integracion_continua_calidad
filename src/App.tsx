@@ -1,5 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
 import React from 'react';
 import { Link, Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
