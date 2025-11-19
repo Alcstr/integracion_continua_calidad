@@ -1,0 +1,60 @@
+    {
+  "info": {
+    "_postman_id": "e3b6c2c8-0000-4000-8000-000000000001",
+    "name": "Integración Continua - Calidad - Postman (Plan B)",
+    "description": "Colección de pruebas de integración para el proyecto educativo del Colegio Mentes Creativas. Incluye pruebas básicas y una prueba adicional sobre la estructura de la respuesta.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET posts?_limit=4",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://jsonplaceholder.typicode.com/posts?_limit=4",
+          "protocol": "https",
+          "host": ["jsonplaceholder", "typicode", "com"],
+          "path": ["posts"],
+          "query": [
+            {
+              "key": "_limit",
+              "value": "4"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Código de estado es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Tiempo de respuesta menor a 1000 ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+              "});",
+              "",
+              "pm.test(\"Respuesta es un arreglo con 4 elementos\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(Array.isArray(data)).to.be.true;",
+              "    pm.expect(data.length).to.eql(4);",
+              "});",
+              "",
+              "pm.test(\"Cada elemento tiene id y title\", function () {",
+              "    const data = pm.response.json();",
+              "    data.forEach((item) => {",
+              "        pm.expect(item).to.have.property('id');",
+              "        pm.expect(item).to.have.property('title');",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
