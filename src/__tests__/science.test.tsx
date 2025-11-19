@@ -5,19 +5,31 @@ import SciencePage from "../pages/SciencePage";
 describe("SciencePage", () => {
   it("muestra el título principal de ciencias naturales", () => {
     render(<SciencePage />);
-
     expect(
-      screen.getByText(/Ciencias naturales: Sistema solar/i)
+      screen.getByText(/ciencias naturales: sistema solar/i)
     ).toBeInTheDocument();
   });
 
   it("muestra información de varios planetas", () => {
     render(<SciencePage />);
 
-    // Ajusta estos nombres si tus planetas son otros
-    expect(screen.getByText(/Mercurio/i)).toBeInTheDocument();
-    expect(screen.getByText(/Venus/i)).toBeInTheDocument();
-    expect(screen.getByText(/Tierra/i)).toBeInTheDocument();
-    expect(screen.getByText(/Marte/i)).toBeInTheDocument();
+    expect(screen.getByText(/mercurio/i)).toBeInTheDocument();
+    expect(screen.getByText(/venus/i)).toBeInTheDocument();
+    expect(screen.getByText(/tierra/i)).toBeInTheDocument();
+    expect(screen.getByText(/marte/i)).toBeInTheDocument();
+  });
+
+  // si quieres una prueba extra sin usar roles:
+  it("tiene al menos cuatro planetas visibles en la página", () => {
+    render(<SciencePage />);
+
+    const planetas = [
+      screen.getByText(/mercurio/i),
+      screen.getByText(/venus/i),
+      screen.getByText(/tierra/i),
+      screen.getByText(/marte/i),
+    ];
+
+    expect(planetas.length).toBeGreaterThanOrEqual(4);
   });
 });

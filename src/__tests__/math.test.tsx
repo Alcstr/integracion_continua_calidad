@@ -6,36 +6,42 @@ describe("MathPage", () => {
   it("muestra el título y los botones de operaciones", () => {
     render(<MathPage />);
 
-    expect(screen.getByText(/Matemáticas/i)).toBeInTheDocument();
-
+    expect(screen.getByText(/matemáticas/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /suma/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /resta/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /Suma/i })
+      screen.getByRole("button", { name: /multiplicación/i })
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Resta/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Multiplicación/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /División/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /división/i })).toBeInTheDocument();
   });
 
-  it("permite ingresar una respuesta y ejecutar la comprobación sin errores", () => {
+  // ✅ respuesta correcta
+  it("muestra mensaje de 'Correcto' cuando la respuesta es correcta", async () => {
     render(<MathPage />);
 
-    const input = screen.getByRole("spinbutton") as HTMLInputElement;
-    const comprobarButton = screen.getByRole("button", {
-      name: /Comprobar/i,
-    });
+    const input = screen.getByRole("spinbutton"); // <input type="number" />
+    const sumaButton = screen.getByRole("button", { name: /suma/i });
 
-    // Simulamos que el estudiante escribe una respuesta
+    // ajusta el valor "5" a la respuesta real de tu primer ejercicio
     fireEvent.change(input, { target: { value: "5" } });
-    fireEvent.click(comprobarButton);
+    fireEvent.click(sumaButton);
 
-    // Expectativa sencilla: el test llega aquí sin lanzar errores
-    // (podrías cambiarlo por algo más específico si luego ajustas el componente)
-    expect(true).toBe(true);
+    // usamos findByText por si el mensaje aparece tras un rerender
+    expect(await screen.findByText(/correct/i)).toBeInTheDocument();
+    // si tu texto es "¡Correcto!" o "Respuesta correcta", usa /respuesta correcta/i
+  });
+
+  // ✅ respuesta incorrecta
+  it("muestra mensaje de 'Incorrecto' cuando la respuesta es incorrecta", async () => {
+    render(<MathPage />);
+
+    const input = screen.getByRole("spinbutton");
+    const sumaButton = screen.getByRole("button", { name: /suma/i });
+
+    fireEvent.change(input, { target: { value: "999" } });
+    fireEvent.click(sumaButton);
+
+    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument();
+    // adapta a /incorrecto/i o al texto real, por ejemplo /vuelve a intentarlo/i
   });
 });
