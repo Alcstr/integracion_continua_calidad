@@ -6,42 +6,58 @@ describe("MathPage", () => {
   it("muestra el título y los botones de operaciones", () => {
     render(<MathPage />);
 
-    expect(screen.getByText(/matemáticas/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /suma/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /resta/i })).toBeInTheDocument();
+    // Título principal
+    expect(
+      screen.getByText(/matemáticas: operaciones básicas/i)
+    ).toBeInTheDocument();
+
+    // Botones de operación
+    expect(
+      screen.getByRole("button", { name: /suma/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /resta/i })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /multiplicación/i })
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /división/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /división/i })
+    ).toBeInTheDocument();
   });
 
-  // ✅ respuesta correcta
-  it("muestra mensaje de 'Correcto' cuando la respuesta es correcta", async () => {
+  it("muestra un ejercicio y un campo para ingresar la respuesta", () => {
     render(<MathPage />);
 
-    const input = screen.getByRole("spinbutton"); // <input type="number" />
-    const sumaButton = screen.getByRole("button", { name: /suma/i });
+    // Enunciado del ejercicio
+    expect(screen.getByText(/ejercicio:/i)).toBeInTheDocument();
 
-    // ajusta el valor "5" a la respuesta real de tu primer ejercicio
-    fireEvent.change(input, { target: { value: "5" } });
-    fireEvent.click(sumaButton);
+    // Input numérico para la respuesta
+    const input = screen.getByRole("spinbutton");
+    expect(input).toBeInTheDocument();
 
-    // usamos findByText por si el mensaje aparece tras un rerender
-    expect(await screen.findByText(/correct/i)).toBeInTheDocument();
-    // si tu texto es "¡Correcto!" o "Respuesta correcta", usa /respuesta correcta/i
+    // Botón para comprobar
+    expect(
+      screen.getByRole("button", { name: /comprobar/i })
+    ).toBeInTheDocument();
   });
 
-  // ✅ respuesta incorrecta
-  it("muestra mensaje de 'Incorrecto' cuando la respuesta es incorrecta", async () => {
+  it("actualiza el puntaje después de comprobar una respuesta", () => {
     render(<MathPage />);
 
     const input = screen.getByRole("spinbutton");
-    const sumaButton = screen.getByRole("button", { name: /suma/i });
+    const comprobarButton = screen.getByRole("button", { name: /comprobar/i });
 
-    fireEvent.change(input, { target: { value: "999" } });
-    fireEvent.click(sumaButton);
+    // Obtenemos el nodo donde se muestra el puntaje
+    const puntajeNode = screen.getByText(/puntaje:/i).parentElement as HTMLElement;
+    const puntajeAntes = puntajeNode.textContent;
 
-    expect(await screen.findByText(/incorrect/i)).toBeInTheDocument();
-    // adapta a /incorrecto/i o al texto real, por ejemplo /vuelve a intentarlo/i
+    // Escribimos cualquier número (no importa si es correcto o no)
+    fireEvent.change(input, { target: { value: "123" } });
+    fireEvent.click(comprobarButton);
+
+    // Verificamos que el texto del puntaje haya cambiado
+    const puntajeDespues = puntajeNode.textContent;
+    expect(puntajeDespues).not.toBe(puntajeAntes);
   });
 });

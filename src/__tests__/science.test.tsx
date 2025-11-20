@@ -5,6 +5,7 @@ import SciencePage from "../pages/SciencePage";
 describe("SciencePage", () => {
   it("muestra el título principal de ciencias naturales", () => {
     render(<SciencePage />);
+
     expect(
       screen.getByText(/ciencias naturales: sistema solar/i)
     ).toBeInTheDocument();
@@ -19,7 +20,7 @@ describe("SciencePage", () => {
     expect(screen.getByText(/marte/i)).toBeInTheDocument();
   });
 
-  // si quieres una prueba extra sin usar roles:
+  // Prueba extra: asegura que hay al menos cuatro planetas
   it("tiene al menos cuatro planetas visibles en la página", () => {
     render(<SciencePage />);
 
