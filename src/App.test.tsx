@@ -1,16 +1,11 @@
+import { describe, it, expect } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 
 describe("App", () => {
-  test("renderiza el título principal de la aplicación", () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
+  it("renderiza el título principal de la aplicación", () => {
+    render(<App />);
 
-    // Ajusta este texto al título real de tu HomePage
     expect(
       screen.getByText(/Colegio Mentes Creativas/i)
     ).toBeInTheDocument();
