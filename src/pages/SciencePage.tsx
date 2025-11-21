@@ -1,146 +1,109 @@
 // src/pages/SciencePage.tsx
-import React, { useState } from "react";
+import React from "react";
+import NarratorButton from "../components/NarratorButton";
 
-type Planet = {
-  name: string;
-  emoji: string;
-  description: string;
-  extra: string;
-};
-
-const planets: Planet[] = [
+const planetFacts = [
   {
     name: "Mercurio",
-    emoji: "🧡",
-    description: "Es el planeta más cercano al Sol y también uno de los más pequeños.",
-    extra: "Tiene días muy calientes y noches muy frías porque casi no tiene atmósfera.",
+    fact: "Es el planeta más cercano al Sol y tiene días muy largos.",
   },
   {
     name: "Venus",
-    emoji: "💛",
-    description: "Es el planeta más caliente del sistema solar.",
-    extra: "Su atmósfera está llena de nubes de ácido y atrapa mucho calor (efecto invernadero).",
+    fact: "Es el planeta más caliente del sistema solar.",
   },
   {
     name: "Tierra",
-    emoji: "🌍",
-    description: "Nuestro hogar y, hasta ahora, el único planeta conocido con vida.",
-    extra: "Tiene agua líquida, oxígeno y una atmósfera que nos protege del espacio.",
+    fact: "Es nuestro hogar y el único planeta conocido con vida.",
   },
   {
     name: "Marte",
-    emoji: "🔴",
-    description: "Es conocido como el planeta rojo.",
-    extra: "Su color se debe al óxido de hierro en su superficie. Hay muchas misiones espaciales estudiándolo.",
+    fact: "Es conocido como el planeta rojo por el color de su superficie.",
   },
 ];
 
 const SciencePage: React.FC = () => {
-  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
-  const [quizAnswer, setQuizAnswer] = useState<string | null>(null);
-
-  const handlePlanetClick = (name: string) => {
-    setSelectedPlanet((prev) => (prev === name ? null : name));
-  };
-
-  const handleQuiz = (answer: string) => {
-    setQuizAnswer(answer);
-  };
-
-  const isCorrect = quizAnswer === "Marte";
+  const quizText = "¿Cuál es el planeta conocido como el planeta rojo?";
 
   return (
-    <div className="rounded-3xl bg-white/90 p-6 shadow-lg border border-emerald-100 space-y-4">
-      <h1 className="text-2xl font-bold text-emerald-700 flex items-center gap-2">
-        <span>🪐</span>
-        <span>Ciencias naturales: Sistema solar</span>
-      </h1>
+    <div className="space-y-6">
+      <section className="bg-white/80 rounded-3xl shadow-lg p-6 border border-emerald-100">
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-emerald-700">
+              Ciencias naturales: Sistema solar
+            </h1>
+            <p className="text-slate-600 mt-1">
+              Explora algunos planetas del sistema solar y responde el mini
+              quiz. ¡Puedes escuchar la explicación con el narrador!
+            </p>
+          </div>
+          <NarratorButton
+            text="Bienvenido a la clase de ciencias. Hoy aprenderemos sobre algunos planetas del sistema solar: Mercurio, Venus, la Tierra y Marte."
+            label="Escuchar introducción"
+          />
+        </header>
 
-      <p className="text-sm text-slate-700">
-        Explora algunos de los planetas del sistema solar. Haz clic en cada tarjeta
-        para descubrir un dato curioso.
-      </p>
-
-      {/* Tarjetas de planetas */}
-      <div className="grid gap-4 md:grid-cols-2">
-        {planets.map((planet) => {
-          const isOpen = selectedPlanet === planet.name;
-
-          return (
-            <button
+        {/* Lista de planetas */}
+        <div className="grid gap-3 md:grid-cols-2">
+          {planetFacts.map((planet) => (
+            <article
               key={planet.name}
-              type="button"
-              onClick={() => handlePlanetClick(planet.name)}
-              className={`text-left rounded-3xl px-4 py-3 shadow border transition flex flex-col gap-1 ${
-                isOpen
-                  ? "bg-emerald-100 border-emerald-300"
-                  : "bg-emerald-50 border-emerald-100 hover:bg-emerald-100"
-              }`}
+              className="rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50 to-sky-50 p-4 shadow-sm"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">{planet.emoji}</span>
-                  <span className="font-semibold text-emerald-900">
-                    {planet.name}
-                  </span>
-                </div>
-                <span className="text-xs text-emerald-700">
-                  {isOpen ? "Ver menos ▲" : "Ver más ▼"}
-                </span>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="font-bold text-emerald-700 flex items-center gap-2">
+                  <span>🪐</span>
+                  <span>{planet.name}</span>
+                </h2>
+                <NarratorButton
+                  text={`${planet.name}. ${planet.fact}`}
+                  label="Escuchar"
+                />
               </div>
-              <p className="text-xs text-slate-700 mt-1">{planet.description}</p>
-              {isOpen && (
-                <p className="mt-2 text-xs text-slate-600">{planet.extra}</p>
-              )}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Mini quiz */}
-      <section className="mt-6 space-y-2">
-        <h2 className="text-lg font-semibold text-emerald-700 flex items-center gap-2">
-          <span>🧠</span>
-          <span>Mini quiz: el planeta rojo</span>
-        </h2>
-        <p className="text-sm text-slate-700">
-          ¿Cuál de estos planetas es conocido como el <strong>planeta rojo</strong>?
-        </p>
-
-        <div className="flex flex-wrap gap-2 mt-2">
-          {["Mercurio", "Venus", "Tierra", "Marte"].map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => handleQuiz(option)}
-              className={`px-3 py-1 rounded-full text-sm font-semibold shadow transition ${
-                quizAnswer === option
-                  ? "bg-emerald-500 text-white"
-                  : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
-              }`}
-            >
-              {option}
-            </button>
+              <p className="text-sm text-slate-700">{planet.fact}</p>
+            </article>
           ))}
         </div>
 
-        {quizAnswer && (
-          <div className="mt-3">
-            {isCorrect ? (
-              <div className="inline-flex items-center gap-2 rounded-2xl bg-emerald-100 px-3 py-2 text-emerald-800 text-sm shadow">
-                <span className="text-xl">🎉</span>
-                <span>¡Correcto! Marte es el planeta rojo.</span>
-              </div>
-            ) : (
-              <div className="inline-flex items-center gap-2 rounded-2xl bg-rose-100 px-3 py-2 text-rose-800 text-sm shadow">
-                <span className="text-xl">🙂</span>
-                <span>
-                  No pasa nada, la respuesta correcta es <strong>Marte</strong>.
-                </span>
-              </div>
-            )}
+        {/* Mini quiz */}
+        <div className="mt-6 rounded-2xl border border-sky-100 bg-sky-50/80 p-4">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="font-semibold text-sky-800">{quizText}</p>
+            <NarratorButton text={quizText} label="Leer pregunta" />
           </div>
-        )}
+          <p className="text-sm text-slate-600 mb-2">
+            Pista: es un planeta de color rojo 🌕.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="px-3 py-1 rounded-full border bg-white hover:bg-sky-100 text-slate-700 text-sm"
+            >
+              Mercurio
+            </button>
+            <button
+              type="button"
+              className="px-3 py-1 rounded-full border bg-white hover:bg-sky-100 text-slate-700 text-sm"
+            >
+              Venus
+            </button>
+            <button
+              type="button"
+              className="px-3 py-1 rounded-full border bg-white hover:bg-sky-100 text-slate-700 text-sm"
+            >
+              Tierra
+            </button>
+            <button
+              type="button"
+              className="px-3 py-1 rounded-full border bg-emerald-500 text-white text-sm shadow hover:bg-emerald-600"
+            >
+              Marte ✅
+            </button>
+          </div>
+          <p className="mt-3 text-sm text-emerald-700 font-semibold">
+            Marte es el planeta rojo.
+          </p>
+        </div>
       </section>
     </div>
   );

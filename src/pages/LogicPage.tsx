@@ -1,5 +1,16 @@
 // src/pages/LogicPage.tsx
 import React, { useState } from "react";
+import NarratorButton from "../components/NarratorButton";
+
+interface SequenceQuestion {
+  sequence: number[];
+  correct: number;
+}
+
+const baseQuestion: SequenceQuestion = {
+  sequence: [2, 4, 6, 8],
+  correct: 10,
+};
 
 const LogicPage: React.FC = () => {
   const [selected, setSelected] = useState<number | null>(null);
@@ -7,87 +18,98 @@ const LogicPage: React.FC = () => {
     null
   );
 
-  const sequence = [2, 4, 6, 8];
-  const correctAnswer = 10;
-  const options = [6, 8, 10, 12]; // el primero (6) es incorrecto
+  const options = [10, 12, 9];
 
-  const handleClick = (value: number) => {
+  const handleOptionClick = (value: number) => {
     setSelected(value);
-    if (value === correctAnswer) {
+    if (value === baseQuestion.correct) {
       setFeedback("correcto");
     } else {
       setFeedback("incorrecto");
     }
   };
 
+  const explanationText =
+    "Observa la secuencia dos, cuatro, seis, ocho. Cada número aumenta de dos en dos. El siguiente número correcto es diez.";
+
   return (
-    <div className="rounded-3xl bg-white/90 p-6 shadow-lg border border-purple-100 space-y-4">
-      <h1 className="text-2xl font-bold text-purple-700 flex items-center gap-2">
-        <span>🧩</span>
-        <span>Pensamiento lógico: patrones y secuencias</span>
-      </h1>
-
-      <p className="text-sm text-slate-700">
-        Observa la secuencia y selecciona la opción que completa correctamente el
-        patrón.
-      </p>
-
-      {/* Secuencia visual */}
-      <div className="flex items-center gap-2 mt-2">
-        {sequence.map((num, index) => (
-          <div
-            key={index}
-            className="w-10 h-10 flex items-center justify-center rounded-2xl bg-purple-100 text-purple-800 font-semibold shadow"
-          >
-            {num}
-          </div>
-        ))}
-        <span className="text-lg font-bold text-slate-600">?</span>
-      </div>
-
-      {/* Opciones */}
-      <div className="mt-4 flex flex-wrap gap-2">
-        {options.map((option, index) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => handleClick(option)}
-            className={`w-12 h-12 rounded-2xl shadow text-sm font-semibold transition flex items-center justify-center ${
-              selected === option
-                ? "bg-purple-500 text-white"
-                : "bg-purple-50 text-purple-800 hover:bg-purple-100"
-            }`}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-
-      {/* Feedback para niños */}
-      {feedback === "correcto" && (
-        <div className="mt-4 rounded-2xl bg-emerald-100 px-4 py-3 text-emerald-800 flex items-center gap-3 shadow">
-          <span className="text-2xl">🧠</span>
+    <div className="space-y-6">
+      <section className="bg-white/80 rounded-3xl shadow-lg p-6 border border-purple-100">
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <div>
-            <p className="font-bold">¡Excelente!</p>
-            <p className="text-sm">
-              Has detectado el patrón: estás sumando 2 cada vez (2, 4, 6, 8, 10).
+            <h1 className="text-2xl font-bold text-purple-700">
+              Pensamiento lógico: Secuencias y patrones
+            </h1>
+            <p className="text-slate-600 mt-1">
+              Observa las secuencias de números y descubre cuál es el siguiente
+              valor que completa el patrón.
             </p>
           </div>
-        </div>
-      )}
+          <NarratorButton
+            text="Bienvenido al módulo de lógica. Resolveremos secuencias numéricas buscando patrones como sumar dos, sumar cinco o multiplicar."
+            label="Escuchar introducción"
+          />
+        </header>
 
-      {feedback === "incorrecto" && (
-        <div className="mt-4 rounded-2xl bg-rose-100 px-4 py-3 text-rose-800 flex items-center gap-3 shadow">
-          <span className="text-2xl">🤔</span>
-          <div>
-            <p className="font-bold">Casi...</p>
-            <p className="text-sm">
-              Incorrecto. La respuesta correcta era 10, porque la secuencia suma 2
-              en cada paso.
+        {/* Ejercicio principal */}
+        <div className="mt-2 rounded-2xl border border-purple-100 bg-gradient-to-r from-purple-50 to-sky-50 p-4">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <p className="font-semibold text-slate-800">
+              Completa la secuencia:
             </p>
+            <NarratorButton text={explanationText} label="Escuchar pista" />
           </div>
+
+          <p className="text-xl font-bold text-purple-700 mb-3">
+            {baseQuestion.sequence.join(", ")} , …
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {options.map((opt) => {
+              const isSelected = selected === opt;
+              const isCorrect = opt === baseQuestion.correct;
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleOptionClick(opt)}
+                  className={`px-4 py-2 rounded-xl border shadow-sm text-lg font-semibold transition-all
+                  ${
+                    isSelected
+                      ? isCorrect
+                        ? "bg-emerald-500 text-white border-emerald-500 scale-105"
+                        : "bg-rose-500 text-white border-rose-500 scale-105"
+                      : "bg-white text-purple-700 border-purple-200 hover:bg-purple-50"
+                  }`}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {feedback && (
+            <div className="mt-4 flex items-center gap-2">
+              {feedback === "correcto" ? (
+                <>
+                  <span className="text-3xl animate-bounce">🧠</span>
+                  <p className="text-emerald-700 font-semibold">
+                    ¡Muy bien! Has descubierto el patrón: sumar 2 cada vez.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <span className="text-3xl">🤯</span>
+                  <p className="text-rose-700 font-semibold">
+                    Esa opción no sigue el patrón. Observa de nuevo la secuencia
+                    y prueba otra respuesta.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </section>
     </div>
   );
 };
