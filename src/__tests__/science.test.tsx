@@ -1,5 +1,5 @@
 import { describe, it, expect } from "@jest/globals";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import SciencePage from "../pages/SciencePage";
 
 describe("SciencePage", () => {
@@ -11,26 +11,42 @@ describe("SciencePage", () => {
     ).toBeInTheDocument();
   });
 
-  it("muestra información de varios planetas", () => {
+  it("muestra información de los planetas Mercurio, Venus, Tierra y Marte", () => {
     render(<SciencePage />);
 
-    expect(screen.getByText(/mercurio/i)).toBeInTheDocument();
-    expect(screen.getByText(/venus/i)).toBeInTheDocument();
-    expect(screen.getByText(/tierra/i)).toBeInTheDocument();
-    expect(screen.getByText(/marte/i)).toBeInTheDocument();
+    const planetNames = [/mercurio/i, /venus/i, /tierra/i, /marte/i];
+
+    planetNames.forEach((regex) => {
+      const matches = screen.getAllByText(regex);
+      // al menos una coincidencia por planeta
+      expect(matches.length).toBeGreaterThanOrEqual(1);
+    });
   });
 
-  // Prueba extra: asegura que hay al menos cuatro planetas
-  it("tiene al menos cuatro planetas visibles en la página", () => {
+  it("renderiza al menos cuatro tarjetas de planeta", () => {
     render(<SciencePage />);
 
-    const planetas = [
-      screen.getByText(/mercurio/i),
-      screen.getByText(/venus/i),
-      screen.getByText(/tierra/i),
-      screen.getByText(/marte/i),
-    ];
+    // cada tarjeta de planeta es un botón
+    const planetButtons = screen.getAllByRole("button", {
+      name: /(Mercurio|Venus|Tierra|Marte)/i,
+    });
 
-    expect(planetas.length).toBeGreaterThanOrEqual(4);
+    expect(planetButtons.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("muestra mensaje de acierto cuando se selecciona Marte en el mini quiz", () => {
+    render(<SciencePage />);
+
+    // botones del quiz (uno de ellos es Marte)
+    const marteButtons = screen.getAllByRole("button", { name: /Marte/i });
+
+    // normalmente el último es el del quiz, pero por si acaso usamos el último
+    const quizMarteButton = marteButtons[marteButtons.length - 1];
+
+    fireEvent.click(quizMarteButton);
+
+    expect(
+      screen.getByText(/Marte es el planeta rojo/i)
+    ).toBeInTheDocument();
   });
 });

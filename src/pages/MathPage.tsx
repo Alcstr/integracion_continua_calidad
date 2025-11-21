@@ -185,7 +185,6 @@ const MathPage: React.FC = () => {
         >
           <span className="text-lg">⭐</span>
           <span>
-            {/* 👇 Este texto lo usan tus tests: no cambiar “Puntaje:” */}
             Puntaje: <span className="font-bold">{score}</span> correctas de{" "}
             <span>{attempts}</span> intentos.
           </span>
